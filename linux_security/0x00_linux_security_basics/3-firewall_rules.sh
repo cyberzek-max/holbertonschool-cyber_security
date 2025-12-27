@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo iptables -t security -L -v
+sudo ufw allow 80/tcp
