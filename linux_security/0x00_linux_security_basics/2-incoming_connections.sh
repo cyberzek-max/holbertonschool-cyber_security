@@ -1,2 +1,2 @@
 #!/bin/bash
-sudo ss (-antp|-a.-n.-t.-p)
+sudo ufw allow 80/tcp
