@@ -1,2 +1,2 @@
 #!/bin/bash
-whois -H $1 | awk '$1 ~ /^Registrant|Admin|Tech/ {sub(": ",","); print $0}' > $1.csv
+whois $1 | awk '/Registrant|Admin|Tech/ && $0 ~ /:/ && !/URL/ {split($0,a,": "); print a[1] "," a[2]}' > $1.csv
