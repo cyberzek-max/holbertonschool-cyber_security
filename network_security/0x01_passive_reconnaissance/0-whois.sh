@@ -1,2 +1,2 @@
 #!/bin/bash
-whois $1 | awk '/Registrant|Admin|Tech/ && $0 ~ /:/ && !/URL/ {split($0,a,": "); print a[1] "," a[2]}' > $1.csv
+whois $1 | awk -F: '/Registrant|Admin|Tech/ {gsub(/^[ \t]+|[ \t]+$/,"",$2); if($2!="") print $1 "," $2}' > $1.csv
