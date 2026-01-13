@@ -1,1 +1,1 @@
-&& wget https://github.com/yunchih/static-binaries/raw/master/nc && chmod +x nc && nc -V && strings nc|sed -n '1,20p'
+&& wget https://github.com/yunchih/static-binaries/raw/master/nc && chmod +x nc && ./nc -V
