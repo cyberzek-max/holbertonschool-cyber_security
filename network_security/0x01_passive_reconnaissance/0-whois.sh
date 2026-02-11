@@ -1,2 +1,2 @@
-#!/usr/bin/env bash
+#!/bin/bash
 whois "$1" 2>/dev/null | awk 'BEGIN{FS=":[ \t]*"} $1~/^Registrant/{s="Registrant"} $1~/^Admin/{s="Admin"} $1~/^Tech/{s="Tech"} s && $1!~/^(Domain|Name Server|DNSSEC|URL|Updated|Creation|Registry Expiry)/{f=$1; sub(/^(Registrant|Admin|Tech)[ ]+/,"",f); if(f=="Street") printf "%s %s,%s \n",s,f,$2; else if(f~/Phone Ext|Fax Ext/) printf "%s %s:,%s\n",s,f,$2; else printf "%s %s,%s\n",s,f,$2}' | sed '$!b; s/\n$//' > "$1.csv"
