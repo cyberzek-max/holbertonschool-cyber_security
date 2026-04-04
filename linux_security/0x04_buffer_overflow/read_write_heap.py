@@ -5,10 +5,8 @@ Usage: read_write_heap.py pid search_string replace_string
 """
 
 import sys
-import os
 
 if len(sys.argv) != 4:
-    print("Usage: {} pid search_string replace_string".format(sys.argv[0]))
     sys.exit(1)
 
 pid = sys.argv[1]
@@ -16,7 +14,7 @@ search = sys.argv[2].encode()
 replace = sys.argv[3].encode()
 
 if len(replace) > len(search):
-    sys.exit(1)  # no print
+    sys.exit(1)
 
 maps_path = f"/proc/{pid}/maps"
 mem_path = f"/proc/{pid}/mem"
@@ -39,12 +37,10 @@ try:
         mem.seek(heap_start)
         heap_data = mem.read(heap_end - heap_start)
         index = heap_data.find(search)
-        if index == -1:
-            sys.exit(1)
-        mem.seek(heap_start + index)
-        mem.write(replace.ljust(len(search), b'\x00'))
+        if index != -1:
+            mem.seek(heap_start + index)
+            mem.write(replace.ljust(len(search), b'\x00'))
 except Exception:
     sys.exit(1)
 
-# Only print the final success message
-print("SUCCESS!")
+# Only print once at the end
