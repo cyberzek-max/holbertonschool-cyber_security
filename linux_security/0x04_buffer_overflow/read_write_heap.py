@@ -44,3 +44,4 @@ except Exception:
     sys.exit(1)
 
 # Only print once at the end
+print("SUCCESS!")
