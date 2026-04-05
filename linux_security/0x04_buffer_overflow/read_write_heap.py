@@ -1,60 +1,56 @@
 #!/usr/bin/python3
+"""Documentation :
+Module docs.
 """
-read_write_heap.py - search and replace a string in the heap of a running process.
 
-Usage:
-    read_write_heap.py pid search_string replace_string
-
-The script opens the heap of a running process (via /proc/<pid>/mem), finds
-the first occurrence of search_string, and replaces it with replace_string.
-Only ASCII strings are supported. The replace string must not be longer than
-the search string.
-"""
 
 import sys
+import os
+
+
+def usage():
+    """Documentation :
+    usage function docs.
+    """
+
+    print("Usage: read_write_heap.py pid search_string replace_string")
+    sys.exit(1)
 
 
 def main():
-    """Main entry point for the script."""
+    """Documentation :
+    main function docs.
+    """
     if len(sys.argv) != 4:
-        sys.exit(1)
-
-    pid = sys.argv[1]
-    search = sys.argv[2].encode()
-    replace = sys.argv[3].encode()
-
-    if len(replace) > len(search):
-        sys.exit(1)
-
-    maps_path = f"/proc/{pid}/maps"
+        usage()
+    pid = int(sys.argv[1])
+    search_string = sys.argv[2].encode()
+    replace_string = sys.argv[3].encode()
     mem_path = f"/proc/{pid}/mem"
-
-    heap_start = heap_end = None
+    maps_path = f"/proc/{pid}/maps"
     try:
-        with open(maps_path, 'r') as maps:
-            for line in maps:
-                if "[heap]" in line:
-                    heap_start, heap_end = [int(x, 16) for x in line.split(' ')[0].split('-')]
-                    break
-    except Exception:
+        with open(maps_path, 'r') as maps_file:
+            for line in maps_file.readlines():
+                parts = line.split()
+                start = int(parts[0].split('-')[0], 16)
+                end = int(parts[0].split('-')[1], 16)
+                permissions = parts[1]
+                if 'heap' in line and 'rw-p' in permissions:
+                    with open(mem_path, 'r+b') as mem_file:
+                        mem_file.seek(start)
+                        data = mem_file.read(end - start)
+                        index = data.find(search_string)
+                        if index != -1:
+                            new_1 = data[:index] + replace_string
+                            new_2 = data[index + len(search_string):]
+                            new_data = new_1 + new_2
+                            mem_file.seek(start)
+                            mem_file.write(new_data)
+                            sys.exit(0)
+        print("Error: String not found in heap")
+    except Exception as e:
+        print(f"Error: {e}")
         sys.exit(1)
-
-    if heap_start is None:
-        sys.exit(1)
-
-    try:
-        with open(mem_path, 'r+b') as mem:
-            mem.seek(heap_start)
-            heap_data = mem.read(heap_end - heap_start)
-            index = heap_data.find(search)
-            if index != -1:
-                mem.seek(heap_start + index)
-                mem.write(replace.ljust(len(search), b'\x00'))
-    except Exception:
-        sys.exit(1)
-
-    # Only print once
-    print("SUCCESS!")
 
 
 if __name__ == "__main__":
