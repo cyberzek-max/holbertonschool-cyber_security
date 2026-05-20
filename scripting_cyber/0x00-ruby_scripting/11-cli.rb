@@ -44,11 +44,14 @@ elsif options[:list]
   if tasks.empty?
     puts "No tasks found."
   else
-    puts "Tasks:\n\n"
+    puts "Tasks:"
+    puts
 
     tasks.each do |task|
       puts "    #{task}"
     end
+
+    puts
   end
 
 elsif options[:remove]
