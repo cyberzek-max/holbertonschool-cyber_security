@@ -1,22 +1,21 @@
-#!/usr/bin/env ruby
-
-require 'json'  # Import the JSON module to work with JSON files
+require 'json'
 
 def count_user_ids(path)
-  # Read and parse the JSON file
+  # 1. Faylı oxuyuruq və JSON olaraq parse edirik
   file_content = File.read(path)
   data = JSON.parse(file_content)
-  
-  # Initialize a hash to count userIds
-  user_id_counts = Hash.new(0)
 
-  # Iterate through the array of objects and count userIds
-  data.each do |entry|
-    user_id_counts[entry["userId"]] += 1
+  # 2. Hər bir userId-nin sayını saxlamaq üçün boş bir Hash yaradırıq (ilkin dəyəri 0)
+  counts = Hash.new(0)
+
+  # 3. Data üzərində dövr edərək userId-ləri sayırıq
+  data.each do |item|
+    user_id = item['userId']
+    counts[user_id] += 1 if user_id
   end
 
-  # Sort the results by userId and print them
-  user_id_counts.sort.each do |user_id, count|
+  # 4. Nəticəni tapşırıqdakı çıxış formatına uyğun ekrana yazdırırıq
+  counts.each do |user_id, count|
     puts "#{user_id}: #{count}"
   end
 end
