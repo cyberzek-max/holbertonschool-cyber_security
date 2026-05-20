@@ -30,8 +30,8 @@ OptionParser.new do |opts|
   end
 end.parse!
 
-# Handle options
 if options[:add]
+
   File.open(TASKS_FILE, 'a') do |f|
     f.puts(options[:add])
   end
@@ -39,31 +39,34 @@ if options[:add]
   puts "Task '#{options[:add]}' added."
 
 elsif options[:list]
+
   tasks = File.readlines(TASKS_FILE, chomp: true)
 
   if tasks.empty?
     puts "No tasks found."
   else
-    puts "Tasks:"
-    puts
+    output = "Tasks:\n\n"
 
     tasks.each do |task|
-      puts "    #{task}"
+      output += "    #{task}\n"
     end
 
-    puts
+    puts output
   end
 
 elsif options[:remove]
+
   index = options[:remove] - 1
   tasks = File.readlines(TASKS_FILE, chomp: true)
 
   if index.between?(0, tasks.length - 1)
+
     removed = tasks.delete_at(index)
 
     File.write(TASKS_FILE, tasks.join("\n") + "\n")
 
     puts "Task '#{removed}' removed."
+
   else
     puts "Invalid index. Use -l to list tasks."
   end
