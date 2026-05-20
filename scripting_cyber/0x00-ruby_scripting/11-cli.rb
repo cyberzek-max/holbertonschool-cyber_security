@@ -36,8 +36,9 @@ if options[:add]
 elsif options[:list]
   tasks = File.readlines(TASKS_FILE, chomp: true)
 
-  tasks.each_with_index do |task, i|
-    puts "#{i + 1}. #{task}"
+  puts "Tasks:"
+  tasks.each do |task|
+    puts "    #{task}"
   end
 
 elsif options[:remove]
